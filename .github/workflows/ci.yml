@@ -22,7 +22,9 @@ jobs:
       - name: TestCases
         run: go test -cover ./...
 
-
+      - uses: dominikh/staticcheck-action@v1
+        with:
+          version: "latest" 
       - name: Show Go Version 
 
         run: go version
