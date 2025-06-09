@@ -6,25 +6,20 @@ on:
 
 jobs:
   Deploy:
-    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Kodu checkout et
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Go ortamını ayarla
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.23  # Projenin Go sürümünü buraya yaz
+          go-version: 1.23
 
-      # 3. Prod binary derle
       - name: Build production binary
         run: ./scripts/buildprod.sh
 
-      # 4. GCP CLI'yi kur ve yetkilendir
       - name: Authenticate to Google Cloud
         uses: google-github-actions/setup-gcloud@v1
         with:
@@ -32,11 +27,11 @@ jobs:
           service_account_key: ${{ secrets.GCP_CREDENTIALS }}
           export_default_credentials: true
 
-      # 5. Docker imajını build edip Artifact Registry'e gönder
-      - name: Build & Push Docker image to Google Artifact Registry
+      - name: Set GCP Project
+        run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Build & Push Docker image to Artifact Registry
         run: |
           gcloud builds submit \
-            --region=us-central1 \
-            --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/notely-ar-repo/notely:latest \
-            .
+            --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/notely-ar-repo/kullrz:latest
 
