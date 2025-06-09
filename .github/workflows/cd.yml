@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +27,7 @@ jobs:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
       - name: Set GCP Project
-        run: gcloud config set project YOUR_PROJECT_ID
+        run: gcloud config set project notely-462321
 
       - name: Submit image to Artifact Registry
         run: gcloud builds submit --tag REGION-docker.pkg.dev/notely-462321/notely-ar-repo/kullrz:latest .
